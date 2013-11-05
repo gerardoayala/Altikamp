@@ -1,0 +1,14 @@
+body{
+	margin-top: 60px;
+}
+label.error
+{
+	font-weight: 100;
+	color: red;
+}
+.footer{
+	text-align: center;
+}
+.index{
+	text-align: center;
+}
