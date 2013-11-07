@@ -8,6 +8,116 @@ http://usercake.com
 //------------------------------------------------------------------------------
 
 //Retrieve a list of all .php files in models/languages
+function fetchAllEventos(){
+	global $mysqli,$db_table_prefix; 
+	$stmt = $mysqli->prepare("SELECT 
+		idEvento as id,
+		empresa,
+		contacto,
+		fechaInicio,
+		fechaFinal,
+		horaInicio,
+		horaSalida,
+		numeroMontanistas,
+		costoPersona,
+		becas,
+		numeroStaff,
+		transporte,
+		gastosMedicos,
+		paramedico,
+		nombreParamedico,
+		alimentos,
+		nombreAlimentos,
+		observaciones,
+		creador_id,
+		activo
+		FROM ".$db_table_prefix."eventos
+		WHERE activo = 1");
+	$stmt->execute();
+	$stmt->bind_result($id, $empresa, $contacto, $fechaInicio, $fechaFinal, $horaInicio, $horaSalida, $numeroMontanistas, $costoPersona, $becas, $numeroStaff, $transporte, $gastosMedicos, $paramedico, $nombreParamedico, $alimentos, $nombreAlimentos, $observaciones, $creador_id, $activo);
+	while ($stmt->fetch()){
+		$row[] = array('id' => $id,'empresa' => $empresa,'contacto' => $contacto,'fechaInicio' => $fechaInicio,'fechaFinal' => $fechaFinal,'horaInicio' => $horaInicio,'horaSalida' => $horaSalida,'numeroMontanistas' => $numeroMontanistas,'costoPersona' => $costoPersona,'becas' => $becas,'numeroStaff' => $numeroStaff,'transporte' => $transporte,'gastosMedicos' => $gastosMedicos,'paramedico' => $paramedico,'nombreParamedico' => $nombreParamedico,'alimentos' => $alimentos,'nombreAlimentos' => $nombreAlimentos,'observaciones' => $observaciones,'creador_id' => $creador_id,'activo' => $activo,);
+	}
+	$stmt->close();
+	return ($row);
+}
+function fetchEventoDetails($id){
+	if($id!=NULL) {
+		$column = "idEvento";
+		$data = $id;
+	}
+	global $mysqli,$db_table_prefix; 
+	$stmt = $mysqli->prepare("SELECT 
+		idEvento as id,
+		empresa,
+		contacto,
+		fechaInicio,
+		fechaFinal,
+		horaInicio,
+		horaSalida,
+		numeroMontanistas,
+		costoPersona,
+		becas,
+		numeroStaff,
+		transporte,
+		gastosMedicos,
+		paramedico,
+		nombreParamedico,
+		alimentos,
+		nombreAlimentos,
+		observaciones,
+		creador_id,
+		activo
+		FROM ".$db_table_prefix."eventos
+		WHERE activo = 1 AND $column = ?");
+		$stmt->bind_param("s", $data);
+	$stmt->execute();
+	$stmt->bind_result($id, $empresa, $contacto, $fechaInicio, $fechaFinal, $horaInicio, $horaSalida, $numeroMontanistas, $costoPersona, $becas, $numeroStaff, $transporte, $gastosMedicos, $paramedico, $nombreParamedico, $alimentos, $nombreAlimentos, $observaciones, $creador_id, $activo);
+	while ($stmt->fetch()){
+		$row[] = array('id' => $id,'empresa' => $empresa,'contacto' => $contacto,'fechaInicio' => $fechaInicio,'fechaFinal' => $fechaFinal,'horaInicio' => $horaInicio,'horaSalida' => $horaSalida,'numeroMontanistas' => $numeroMontanistas,'costoPersona' => $costoPersona,'becas' => $becas,'numeroStaff' => $numeroStaff,'transporte' => $transporte,'gastosMedicos' => $gastosMedicos,'paramedico' => $paramedico,'nombreParamedico' => $nombreParamedico,'alimentos' => $alimentos,'nombreAlimentos' => $nombreAlimentos,'observaciones' => $observaciones,'creador_id' => $creador_id,'activo' => $activo,);
+	}
+	$stmt->close();
+	return ($row);	
+}
+function eventoExists($id)
+{
+	global $mysqli,$db_table_prefix;
+	$stmt = $mysqli->prepare("SELECT empresa
+		FROM ".$db_table_prefix."eventos
+		WHERE
+		idEvento = ?
+		ORDER BY 
+		idEvento ASC
+		LIMIT 1");
+	$stmt->bind_param("i", $id);	
+	$stmt->execute();
+	$stmt->store_result();
+	$num_returns = $stmt->num_rows;
+	$stmt->close();
+	
+	if ($num_returns > 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;	
+	}
+}
+function deleteEvento($id){
+	global $mysqli,$db_table_prefix;
+	$stmt = $mysqli->prepare("UPDATE ".$db_table_prefix."eventos
+		SET activo = 0
+		WHERE
+		idEvento = ?
+		LIMIT 1
+		");
+	$stmt->bind_param("i",$id);
+	$result = $stmt->execute();
+	$stmt->close();
+	return $result;
+
+}
 function staffExpedienteExists($id)
 {
 	global $mysqli,$db_table_prefix;
@@ -33,6 +143,7 @@ function staffExpedienteExists($id)
 		return false;	
 	}
 }
+
 function staffExpedientesExists($id)
 {
 	global $mysqli,$db_table_prefix;
@@ -61,6 +172,38 @@ function staffExpedientesExists($id)
 function fetchStaffExpediente($id){
 	if($id!=NULL) {
 		$column = "staff_id";
+		$data = $id;
+	}
+	global $mysqli,$db_table_prefix; 
+	$stmt = $mysqli->prepare("SELECT 
+		idStaffExpediente as idse,
+		primeraEn,
+		evaluador,
+		aceptado,
+		conclusiones,
+		cartaPadres,
+		cartaCompromiso,
+		campSeleccion,
+		pruebaFisica,
+		cartaRecomendacion,
+		reporteNeg,
+		habilidadesUtiles,
+		creacion,
+		staff_id
+		FROM ".$db_table_prefix."expedientestaff
+		WHERE $column = ?");
+		$stmt->bind_param("s", $data);
+	$stmt->execute();
+	$stmt->bind_result($idse, $primeraEn, $evaluador, $aceptado, $conclusiones, $cartaPadres, $cartaCompromiso, $campSeleccion, $pruebaFisica, $cartaRecomendacion, $reporteNeg, $habilidadesUtiles, $creacion, $staff_id);
+	while ($stmt->fetch()){
+		$row[] = array('idse' => $idse,'primeraEn' => $primeraEn,'evaluador' => $evaluador,'aceptado' => $aceptado,'conclusiones' => $conclusiones,'cartaPadres' => $cartaPadres,'cartaCompromiso' => $cartaCompromiso,'campSeleccion' => $campSeleccion,'pruebaFisica' => $pruebaFisica,'cartaRecomendacion' => $cartaRecomendacion,'reporteNeg' => $reporteNeg,'habilidadesUtiles' => $habilidadesUtiles,'creacion' => $creacion,'staff_id' => $staff_id);
+	}
+	$stmt->close();
+	return ($row);	
+}
+function fetchStaffExpedienteIndi($id){
+	if($id!=NULL) {
+		$column = "idStaffExpediente";
 		$data = $id;
 	}
 	global $mysqli,$db_table_prefix; 
@@ -238,22 +381,20 @@ function createStaffExpediente($primeraEn,$evaluador,$aceptado,$conclusiones,$ca
 }
 function updateStaffExpediente($primeraEn,$evaluador,$aceptado,$conclusiones,$cartaPadres,$cartaCompromiso,$campSeleccion,$pruebaFisica,$cartaRecomendacion,$reporteNeg,$habilidadesUtiles,$staff_id){
 	global $mysqli,$db_table_prefix;
-		$stmt = $mysqli->prepare("INSERT INTO  `uc_expedientestaff` (
-			`idStaffExpediente` ,
-			`primeraEn` ,
-			`evaluador` ,
-			`aceptado` ,
-			`conclusiones` ,
-			`cartaPadres` ,
-			`cartaCompromiso` ,
-			`campSeleccion` ,
-			`pruebaFisica` ,
-			`cartaRecomendacion` ,
-			`reporteNeg` ,
-			`habilidadesUtiles` ,
-			`creacion` ,
-			`staff_id`
-			)VALUES (NULL ,  ?, ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?, CURRENT_TIMESTAMP ,  $staff_id);");
+	echo $staff_id;
+		$stmt = $mysqli->prepare("UPDATE  `uc_expedientestaff` 
+			SET `primeraEn` =  ?,
+				`evaluador` =  ?,
+				`aceptado` =  ?,
+				`conclusiones` =  ?,
+				`cartaPadres` =  ?,
+				`cartaCompromiso` =  ?,
+				`campSeleccion` =  ?,
+				`pruebaFisica` =  ?,
+				`cartaRecomendacion` =  ?,
+				`reporteNeg` =  ?,
+				`habilidadesUtiles` = ?
+				WHERE  `idStaffExpediente` =$staff_id");
 	$stmt->bind_param("ssisiiisiss", $primeraEn,$evaluador,$aceptado,$conclusiones,$cartaPadres,$cartaCompromiso,$campSeleccion,$pruebaFisica,$cartaRecomendacion,$reporteNeg,$habilidadesUtiles);
 	$result = $stmt->execute();
 	$stmt->close();

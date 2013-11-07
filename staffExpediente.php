@@ -59,9 +59,9 @@ foreach ($staffExpediente as $v1) {
 	}
 	echo "
 	<tr id='".$v1['idse']."'>
-		<td><a href='staffExpediente.php?id=".$v1['idse']."'>".$v1['primeraEn']."</a></td>
+		<td><a href='staffExpedienteEdit.php?id=".$v1['idse']."'>".$v1['primeraEn']."</a></td>
 		<td>".$v1['evaluador']."</td>
-		<td><a href='#'>".$aceptado."</a></td>
+		<td>".$aceptado."</td>
 		<td>".$v1['conclusiones']."</td>
 		<td>".$cartaP."</td>
 		<td>".$cartaC."</td>

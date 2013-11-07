@@ -26,7 +26,7 @@ if(isUserLoggedIn()) {
 			<li><a href='account.php'><span class='glyphicon glyphicon-home'></span> Home</a></li>
 			<li><a href='montanistas.php'><span class='glyphicon glyphicon-tree-conifer'></span> Montañistas</a></li>
 			<li><a href='staffs.php'><span class='glyphicon glyphicon-user'></span> Staff</a></li>
-			<li><a href='account.php'><span class='glyphicon glyphicon-list'></span> Eventos</a></li>
+			<li><a href='eventos.php'><span class='glyphicon glyphicon-list'></span> Eventos</a></li>
 			<li class='dropdown'>
         <a href='#' class='dropdown-toggle' data-toggle='dropdown'><span class='glyphicon glyphicon-stats'></span> Reportes <b class='caret'></b></a>
         <ul class='dropdown-menu'>
