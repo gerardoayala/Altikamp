@@ -8,7 +8,7 @@ include("nav.php");
 <div class="container">
 	<div class="row">
 		<div class="col-lg-12">
-			<h4><a href="eventosAgregar.php"><span class='glyphicon glyphicon-plus-sign'></span> Agregar Evento</a></h4>
+			<h4><a href="eventoAgregar.php"><span class='glyphicon glyphicon-plus-sign'></span> Agregar Evento</a></h4>
 			<table class="table table-hover table-responsive">
 				<tr>
 					<th>Empresa</th>
@@ -19,6 +19,7 @@ include("nav.php");
 					<th>Número de Montañistas</th>
 					<th>Número de Staff</th>
 					<th>Costo por persona</th>
+					<th>Creador</th>
 					<th></th>
 					<th></th>
 				</tr>
@@ -62,6 +63,7 @@ foreach ($eventos as $v1) {
 		<td>".$v1['numeroMontanistas']."</td>
 		<td>".$v1['numeroStaff']."</td>
 		<td>".$v1['costoPersona']."</td>
+		<td>".$v1['creador']."</td>
 		<td> <a href='#' class='element' data-toggle='popover' title='' data-content='Transporte: ".$trans."<br>Gastos Médicos: ".$gastM."<br>Paramedico: ".$paramed."  <br>Alimentos: ".$alimentos."<br>Observaciones: ".$v1['observaciones']." ' data-placement='left' role='button' data-original-title='Detalles'><span class='glyphicon glyphicon-search'></span></a>
 		</td>
 		<td><a href='eventoDelete.php?id=".$v1['id']."'><span class='glyphicon glyphicon-remove'></span></a></td>

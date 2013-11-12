@@ -1,24 +1,19 @@
 <?php
 require_once("models/config.php");
 if (!securePage($_SERVER['PHP_SELF'])){die();}
-$id = $_GET['id'];
-$evento = fetchEventoDetails($id);
+if(!empty($_POST))
+{
+  if(createEvento($_POST['empresa'],$_POST['contacto'],$_POST['fechaInicio'],$_POST['fechaFinal'],$_POST['horaInicio'],$_POST['horaSalida'],$_POST['numeroMontanistas'],$_POST['costoPersona'],$_POST['becas'],$_POST['numeroStaff'],$_POST['transporte'],$_POST['gastosMedicos'],$_POST['paramedicos'],$_POST['nombreParamedicos'],$_POST['alimentos'],$_POST['nombreAlimentos'],$_POST['observaciones'],$loggedInUser->displayname)){
+      header("Location: eventos.php"); die();
+  }else{
+    $errors[] = "Error al crear";
+  }
+} 
 require_once("models/header.php");
+echo "<link href='".$template."css/jquery.ui.timepicker.css' rel='stylesheet' type='text/css' /><script type='text/javascript' src='".$template."js/jquery.ui.position.min.js'></script><script src='".$template."js/jquery.ui.timepicker.js' type='text/javascript'></script>";
 include("nav.php");
+echo resultBlock($errors,$successes);
 ?>
-<div class="container">
-	<div class="row">
-		<div class="col-lg-12">
-			<ul class="nav nav-tabs">
-			  <li class="active"><a href="#home" data-toggle="tab">Datos Generales del Evento</a></li>
-			  <li><a href="#profile" data-toggle="tab">Actividades Asignadas</a></li>
-			  <li><a href="#messages" data-toggle="tab">Staff Asignado</a></li>
-			  <li><a href="#settings" data-toggle="tab">Montañistas Asignados</a></li>
-			</ul>
-
-			<!-- Tab panes -->
-			<div class="tab-content">
-			  <div class="tab-pane active" id="home">
 <div class="container">
   <div class="row">
     <?php echo "<form name='montanista' action='".$_SERVER['PHP_SELF']."' method='post'>";?>
@@ -26,122 +21,90 @@ include("nav.php");
       <h3>Datos Generales</h3>
       <div class="form-group">
         <label for="empresa">Empresa</label>
-        <input type="text" class="form-control" id="empresa" name="empresa" placeholder="Empresa" value="<?php echo $evento[0]['empresa']?>">
+        <input type="text" class="form-control" id="empresa" name="empresa" placeholder="Empresa" value="">
       </div>
       <div class="form-group">
         <label for="contacto">Contacto</label>
-        <input type="text" class="form-control" id="contacto" name="contacto" placeholder="Contacto con la empresa" value="<?php echo $evento[0]['contacto']?>">
+        <input type="text" class="form-control" id="contacto" name="contacto" placeholder="Contacto con la empresa" value="">
       </div>
       <div class="form-group">
         <label for="fechaInicio">Fecha Inicio</label>
-        <input type="text" class="form-control datepicker" id="fechaInicio" name="fechaInicio" placeholder="Fecha de Inicio" value="<?php echo $evento[0]['fechaInicio']?>">
+        <input type="text" class="form-control datepicker" id="fechaInicio" name="fechaInicio" placeholder="Fecha de Inicio" value="">
       </div>
       <div class="form-group">
         <label for="universidad">Fecha Fin</label>
-        <input type="text" class="form-control datepicker" id="fechaFinal" name="fechaFinal" placeholder="Fecha Final" value="<?php echo $evento[0]['fechaFinal']?>">
+        <input type="text" class="form-control datepicker" id="fechaFinal" name="fechaFinal" placeholder="Fecha Final" value="">
       </div>
       <div class="form-group">
         <label for="horaInicio">Hora de Inicio</label>
-        <input type="text"  class="form-control" id="horaInicio" name="horaInicio" placeholder="Hora de Inicio" value="<?php echo $evento[0]['horaInicio']?>" />
+        <input type="text"  class="form-control" id="horaInicio" name="horaInicio" placeholder="Hora de Inicio" value="" />
       </div>
       <div class="form-group">
         <label for="horaSalida">Hora de Salida</label>
-        <input type="text"  class="form-control" id="horaSalida" name="horaSalida" placeholder="Hora de Salida" value="<?php echo $evento[0]['horaSalida']?>" />
+        <input type="text"  class="form-control" id="horaSalida" name="horaSalida" placeholder="Hora de Salida" value="" />
       </div>
       <div class="form-group">
         <label for="fechaIngreso">Número de Montañistas</label>
-        <input type="text" class="form-control" id="numeroMontanistas" name="numeroMontanistas" placeholder="Número de Montañistas" value="<?php echo $evento[0]['numeroMontanistas']?>">
+        <input type="text" class="form-control" id="numeroMontanistas" name="numeroMontanistas" placeholder="Número de Montañistas" value="">
       </div>
       <div class="form-group">
         <label for="estatus">Costo por Persona</label>
-        <input type="text" class="form-control" id="costoPersona" name="costoPersona" placeholder="Costo por Persona" value="<?php echo $evento[0]['costoPersona']?>">
+        <input type="text" class="form-control" id="costoPersona" name="costoPersona" placeholder="Costo por Persona" value="">
       </div>
       <div class="form-group">
         <label for="becas">Becas</label>
-        <input type="text" class="form-control" id="becas" name="becas" placeholder="Becas" value="<?php echo $evento[0]['becas']?>">
+        <input type="text" class="form-control" id="becas" name="becas" placeholder="Becas" value="">
       </div>
       <div class="form-group">
         <label for="fechaIngreso">Número de Staff</label>
-        <input type="text" class="form-control" id="numeroStaff" name="numeroStaff" placeholder="Número de Staff" value="<?php echo $evento[0]['numeroStaff']?>">
+        <input type="text" class="form-control" id="numeroStaff" name="numeroStaff" placeholder="Número de Staff" value="">
       </div>
       </div>
     <div class="col-md-6">
       <h3>Extras</h3>
       <div class="form-group">
         <label for="gastosMedicos">Gastos de Seguro Médico</label>
-        <?php
-        $che = "";
-        $che1 = "";
-        if ($evento[0]['transporte']==1){
-        	$che = "selected='selected'";
-        }else{
-        	$che1 = "selected='selected'";
-        }?>
         <select name="gastosMedicos" id="gastosMedicos" class="form-control" >
           <option value="">Selecciona una opción</option>
-          <option value="1" <?php echo $che;?> >Si</option>
-          <option value="0" <?php echo $che1;?> >No</option>
+          <option value="1">Si</option>
+          <option value="0">No</option>
         </select>
       </div>
       <div class="form-group">
         <label for="paramedicos">Paramedicos</label>
-        <?php
-        $che = "";
-        $che1 = "";
-        if ($evento[0]['transporte']==1){
-        	$che = "selected='selected'";
-        }else{
-        	$che1 = "selected='selected'";
-        }?>
         <select name="paramedicos" id="paramedicos" class="form-control" >
           <option value="">Selecciona una opción</option>
-          <option value="1" <?php echo $che;?> >Si</option>
-          <option value="0" <?php echo $che1;?> >No</option>
+          <option value="1">Si</option>
+          <option value="0">No</option>
         </select>
       </div>
       <div class="form-group">
         <label for="nombreParamedicos">Nombre Paramédico</label>
-        <input type="text" class="form-control" id="nombreParamedicos" name="nombreParamedicos" placeholder="Nombre Paramédico" value="<?php echo $evento[0]['nombreParamedico']?>">
+        <input type="text" class="form-control" id="nombreParamedicos" name="nombreParamedicos" placeholder="Nombre Paramédico" value="">
       </div>
       <div class="form-group">
-        <label for="transporte">Transporte</label>  
-        <?php
-        $che = "";
-        $che1 = "";
-        if ($evento[0]['transporte']==1){
-        	$che = "selected='selected'";
-        }else{
-        	$che1 = "selected='selected'";
-        }?>
+        <label for="transporte">Transporte</label>
         <select name="transporte" class="form-control" >
           <option value="">Selecciona una opción</option>
-          <option value="1" <?php echo $che;?> >Si</option>
-          <option value="0" <?php echo $che1;?> >No</option>
+          <option value="1">Si</option>
+          <option value="0">No</option>
         </select>
       </div>
       <div class="form-group">
         <label for="alimentos">Alimentos</label>
-        <?php
-        $che = "";
-        $che1 = "";
-        if ($evento[0]['alimentos']==1){
-        	$che = "selected='selected'";
-        }else{
-        	$che1 = "selected='selected'";
-        }?>
         <select name="alimentos" class="form-control" >
           <option value="">Selecciona una opción</option>
-          <option value="1" <?php echo $che;?> >Si</option>
-          <option value="0" <?php echo $che1;?> >No</option>
+          <option value="1">Si</option>
+          <option value="0">No</option>
         </select>
       </div>
       <div class="form-group">
         <label for="nombreAlimentos">Nombre Alimentos</label>
-        <input type="text" class="form-control" id="nombreAlimentos" name="nombreAlimentos" placeholder="Nombre Alimentos" value="<?php echo $evento[0]['nombreAlimentos']?>">
+        <input type="text" class="form-control" id="nombreAlimentos" name="nombreAlimentos" placeholder="Nombre Alimentos" value="">
       </div>
       <div class="form-group">
         <label for="observaciones">Observaciones</label>
-        <textarea class="form-control" id="observaciones" name="observaciones" placeholder="Observaciones" ><?php echo $evento[0]['observaciones']?></textarea>
+        <textarea class="form-control" id="observaciones" name="observaciones" placeholder="Observaciones" ></textarea>
       </div>
     <button type="submit" class="btn btn-default">Guardar</button>
     </div>
@@ -231,14 +194,7 @@ include("nav.php");
             },
           }
       });
-  </script></div>
-			  <div class="tab-pane" id="profile">..a.</div>
-			  <div class="tab-pane" id="messages">...</div>
-			  <div class="tab-pane" id="settings">...</div>
-			</div>
-		</div>
-	</div>
-</div>
-<?php 
-require_once("models/footer.php");
+  </script>
+<?php
+include_once 'models/footer.php';
 ?>

@@ -29,14 +29,14 @@ function fetchAllEventos(){
 		alimentos,
 		nombreAlimentos,
 		observaciones,
-		creador_id,
+		creador,
 		activo
 		FROM ".$db_table_prefix."eventos
 		WHERE activo = 1");
 	$stmt->execute();
-	$stmt->bind_result($id, $empresa, $contacto, $fechaInicio, $fechaFinal, $horaInicio, $horaSalida, $numeroMontanistas, $costoPersona, $becas, $numeroStaff, $transporte, $gastosMedicos, $paramedico, $nombreParamedico, $alimentos, $nombreAlimentos, $observaciones, $creador_id, $activo);
+	$stmt->bind_result($id, $empresa, $contacto, $fechaInicio, $fechaFinal, $horaInicio, $horaSalida, $numeroMontanistas, $costoPersona, $becas, $numeroStaff, $transporte, $gastosMedicos, $paramedico, $nombreParamedico, $alimentos, $nombreAlimentos, $observaciones, $creador, $activo);
 	while ($stmt->fetch()){
-		$row[] = array('id' => $id,'empresa' => $empresa,'contacto' => $contacto,'fechaInicio' => $fechaInicio,'fechaFinal' => $fechaFinal,'horaInicio' => $horaInicio,'horaSalida' => $horaSalida,'numeroMontanistas' => $numeroMontanistas,'costoPersona' => $costoPersona,'becas' => $becas,'numeroStaff' => $numeroStaff,'transporte' => $transporte,'gastosMedicos' => $gastosMedicos,'paramedico' => $paramedico,'nombreParamedico' => $nombreParamedico,'alimentos' => $alimentos,'nombreAlimentos' => $nombreAlimentos,'observaciones' => $observaciones,'creador_id' => $creador_id,'activo' => $activo,);
+		$row[] = array('id' => $id,'empresa' => $empresa,'contacto' => $contacto,'fechaInicio' => $fechaInicio,'fechaFinal' => $fechaFinal,'horaInicio' => $horaInicio,'horaSalida' => $horaSalida,'numeroMontanistas' => $numeroMontanistas,'costoPersona' => $costoPersona,'becas' => $becas,'numeroStaff' => $numeroStaff,'transporte' => $transporte,'gastosMedicos' => $gastosMedicos,'paramedico' => $paramedico,'nombreParamedico' => $nombreParamedico,'alimentos' => $alimentos,'nombreAlimentos' => $nombreAlimentos,'observaciones' => $observaciones,'creador' => $creador,'activo' => $activo,);
 	}
 	$stmt->close();
 	return ($row);
@@ -66,15 +66,15 @@ function fetchEventoDetails($id){
 		alimentos,
 		nombreAlimentos,
 		observaciones,
-		creador_id,
+		creador,
 		activo
 		FROM ".$db_table_prefix."eventos
 		WHERE activo = 1 AND $column = ?");
 		$stmt->bind_param("s", $data);
 	$stmt->execute();
-	$stmt->bind_result($id, $empresa, $contacto, $fechaInicio, $fechaFinal, $horaInicio, $horaSalida, $numeroMontanistas, $costoPersona, $becas, $numeroStaff, $transporte, $gastosMedicos, $paramedico, $nombreParamedico, $alimentos, $nombreAlimentos, $observaciones, $creador_id, $activo);
+	$stmt->bind_result($id, $empresa, $contacto, $fechaInicio, $fechaFinal, $horaInicio, $horaSalida, $numeroMontanistas, $costoPersona, $becas, $numeroStaff, $transporte, $gastosMedicos, $paramedico, $nombreParamedico, $alimentos, $nombreAlimentos, $observaciones, $creador, $activo);
 	while ($stmt->fetch()){
-		$row[] = array('id' => $id,'empresa' => $empresa,'contacto' => $contacto,'fechaInicio' => $fechaInicio,'fechaFinal' => $fechaFinal,'horaInicio' => $horaInicio,'horaSalida' => $horaSalida,'numeroMontanistas' => $numeroMontanistas,'costoPersona' => $costoPersona,'becas' => $becas,'numeroStaff' => $numeroStaff,'transporte' => $transporte,'gastosMedicos' => $gastosMedicos,'paramedico' => $paramedico,'nombreParamedico' => $nombreParamedico,'alimentos' => $alimentos,'nombreAlimentos' => $nombreAlimentos,'observaciones' => $observaciones,'creador_id' => $creador_id,'activo' => $activo,);
+		$row[] = array('id' => $id,'empresa' => $empresa,'contacto' => $contacto,'fechaInicio' => $fechaInicio,'fechaFinal' => $fechaFinal,'horaInicio' => $horaInicio,'horaSalida' => $horaSalida,'numeroMontanistas' => $numeroMontanistas,'costoPersona' => $costoPersona,'becas' => $becas,'numeroStaff' => $numeroStaff,'transporte' => $transporte,'gastosMedicos' => $gastosMedicos,'paramedico' => $paramedico,'nombreParamedico' => $nombreParamedico,'alimentos' => $alimentos,'nombreAlimentos' => $nombreAlimentos,'observaciones' => $observaciones,'creador' => $creador,'activo' => $activo,);
 	}
 	$stmt->close();
 	return ($row);	
@@ -103,6 +103,37 @@ function eventoExists($id)
 	{
 		return false;	
 	}
+}
+function createEvento($empresa, $contacto, $fechaInicio, $fechaFinal, $horaInicio, $horaSalida, $numeroMontanistas, $costoPersona, $becas, $numeroStaff, $transporte, $gastosMedicos, $paramedico, $nombreParamedico, $alimentos, $nombreAlimentos, $observaciones, $creador){
+	global $mysqli,$db_table_prefix;
+		$stmt = $mysqli->prepare("INSERT INTO  `uc_eventos` (
+`idEvento` ,
+`empresa` ,
+`contacto` ,
+`fechaInicio` ,
+`fechaFinal` ,
+`horaInicio` ,
+`horaSalida` ,
+`numeroMontanistas` ,
+`costoPersona` ,
+`becas` ,
+`numeroStaff` ,
+`transporte` ,
+`gastosMedicos` ,
+`paramedico` ,
+`nombreParamedico` ,
+`alimentos` ,
+`nombreAlimentos` ,
+`observaciones` ,
+`creador` ,
+`activo`
+)
+VALUES (NULL , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , '1')");
+	$stmt->bind_param("ssssssiiiiiiisisss", $empresa, $contacto, $fechaInicio, $fechaFinal, $horaInicio, $horaSalida, $numeroMontanistas, $costoPersona, $becas, $numeroStaff, $transporte, $gastosMedicos, $paramedico, $nombreParamedico, $alimentos, $nombreAlimentos, $observaciones, $creador);
+	$result = $stmt->execute();
+	$stmt->close();
+	return $result;
+
 }
 function deleteEvento($id){
 	global $mysqli,$db_table_prefix;
